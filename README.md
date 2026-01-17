@@ -15,8 +15,11 @@ With `dibo`, you can quickly create a `.dockerignore` tailored to your project b
 
 # Features
 🚀 Fast and simple — Just one command to generate .dockerignore
+<br>
 📦 Built-in templates — Common languages and frameworks included
+<br>
 🔧 Flexible — Combine multiple templates as needed
+<br>
 💡 [`fzf`](https://github.com/junegunn/fzf) integration — Interactive template selection (recommended)
 
 # Installation
