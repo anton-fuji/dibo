@@ -1,6 +1,6 @@
 <h1 align="center"> dibo </h1>
 <p align="center">
-  <img src="https://github.com/anton-fuji/dibo/blob/main/img/dibo-icon.png" alt="dibo icon" width="600">
+  <img src="https://github.com/anton-fuji/dibo/blob/main/img/dibo-icon.png" alt="dibo icon" width="500">
 </p>
 
 <p align="center">
