@@ -1,0 +1,30 @@
+# ============================================================================
+# GO TEMPLATE
+# ============================================================================
+
+# --- Build Artifacts ---
+bin/
+obj/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# --- Dependency Directories ---
+# Ignore vendor if you want to download dependencies during build
+# vendor/
+
+# --- Test & Coverage ---
+*.test
+*.out
+coverage.txt
+prof/
+
+# --- CGO Artifacts ---
+*.a
+*.o
+
+# --- Tools ---
+.golangci.yml
+.air.toml

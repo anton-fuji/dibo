@@ -1,0 +1,87 @@
+# ============================================================================
+# COMMON / GLOBAL TEMPLATE
+# ============================================================================
+
+# --- AI & Modern Editor Artifacts ---
+# Cursor
+.cursor/
+.cursorrules
+.cursorignore
+
+# Windsurf / Codeium
+.codeium/
+.codeiumignore
+.windsurf/
+.windsurfignore
+
+# GitHub Copilot & others
+.github/copilot/
+*.mdc
+
+# --- Version Control ---
+.git
+.gitignore
+.gitmodules
+.gitattributes
+.hg
+.svn
+
+# --- OS Specific Files ---
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# --- IDEs & Editors ---
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+
+# JetBrains (IntelliJ, WebStorm, etc.)
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Vim / Emacs
+*~
+*.swp
+*.swo
+*.swn
+.netrwhist
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-z]
+Session.vim
+.elc
+
+# --- Logs & Temporary Files ---
+*.log
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
+*.save
+*.sqlite

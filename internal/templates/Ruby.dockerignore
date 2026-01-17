@@ -1,0 +1,26 @@
+# ============================================================================
+# RUBY / RAILS TEMPLATE
+# ============================================================================
+
+# --- Dependencies ---
+vendor/bundle/
+.bundle/
+node_modules/
+
+# --- Build & Output ---
+public/assets/
+public/packs/
+public/packs-test/
+tmp/
+storage/
+
+# --- Logs & Debug ---
+log/*.log
+*.log
+
+# --- Environment & Secrets ---
+.env
+.env.local
+.env.*.local
+config/master.key
+config/credentials.yml.enc

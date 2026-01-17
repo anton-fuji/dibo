@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io/fs"
+	"sort"
 	"strings"
 
 	"github.com/anton-fuji/dibo/internal/templates"
@@ -18,13 +19,26 @@ var listCmd = &cobra.Command{
 			return fmt.Errorf("failed to read templates: %w", err)
 		}
 
-		fmt.Println("Available templates:")
+		var tmplName []string
 		for _, entry := range entries {
 			if strings.HasSuffix(entry.Name(), ".dockerignore") {
 				name := strings.TrimSuffix(entry.Name(), ".dockerignore")
-				fmt.Printf("- %s\n", name)
+				tmplName = append(tmplName, name)
 			}
 		}
+
+		if len(tmplName) == 0 {
+			fmt.Println("No templates available.")
+			return nil
+		}
+
+		sort.Strings(tmplName)
+		fmt.Println("\nAvailable templates:")
+		fmt.Println()
+		for _, name := range tmplName {
+			fmt.Printf("%s\n", name)
+		}
+
 		return nil
 	},
 }

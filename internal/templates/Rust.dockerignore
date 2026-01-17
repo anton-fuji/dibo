@@ -1,0 +1,17 @@
+# ============================================================================
+# RUST TEMPLATE
+# ============================================================================
+
+# --- Build Artifacts ---
+target/
+
+# --- Dependency Directories ---
+# Cargo.lock is usually kept for reproducible builds
+# Cargo.toml is required
+
+# --- Backup Files ---
+*.rs.bk
+
+# --- Tools ---
+.rustfmt.toml
+clippy.toml
