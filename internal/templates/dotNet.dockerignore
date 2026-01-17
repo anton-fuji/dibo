@@ -1,0 +1,26 @@
+# ============================================================================
+# .NET TEMPLATE
+# ============================================================================
+
+# --- Build Artifacts ---
+bin/
+obj/
+publish/
+out/
+
+# --- IDE & Tooling ---
+.vs/
+.user
+*.user
+*.userosscache
+*.sln.docstates
+
+# --- Testing ---
+TestResults/
+*.debugger_log
+
+# --- Secrets & Environment ---
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+*.pfx

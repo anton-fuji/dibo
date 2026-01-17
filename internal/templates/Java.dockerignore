@@ -1,0 +1,28 @@
+# ============================================================================
+# JAVA / KOTLIN TEMPLATE
+# ============================================================================
+
+# --- Build Artifacts ---
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+*.ear
+
+# --- Gradle ---
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+
+# --- Maven ---
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# --- Logs & Temp ---
+*.log
+tmp/

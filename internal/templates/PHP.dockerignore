@@ -1,0 +1,30 @@
+# ============================================================================
+# PHP TEMPLATE
+# ============================================================================
+
+# --- Dependencies ---
+vendor/
+
+# --- Build & Output ---
+public/storage
+public/hot
+public/build
+storage/*.key
+.phpunit.result.cache
+
+# --- Laravel Specific ---
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/logs/*
+
+# --- Environment & Secrets ---
+.env
+.env.backup
+.env.php
+.env.local
+.env.testing
+homestead.json
+homestead.yaml
+auth.json
