@@ -1,4 +1,7 @@
 <h1 align="center"> dibo </h1>
+<p align="center">
+  <img src="https://github.com/anton-fuji/dibo/img/dibo-icon.png" alt="dibo icon" width="600">
+</p>
 
 <p align="center">
 <a href="./LICENSE"><img src="https://img.shields.io/github/license/anton-fuji/dibo?style=flat-square" alt="LICENSE"></a>
