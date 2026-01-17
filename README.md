@@ -4,7 +4,11 @@
 </p>
 
 <p align="center">
-<a href="./LICENSE"><img src="https://img.shields.io/github/license/anton-fuji/dibo?style=flat-square" alt="LICENSE"></a>
+  <img src="https://img.shields.io/github/go-mod/go-version/anton-fuji/dibo?filename=go.mod&style=flat-square" alt="Go Version">
+  <a href="https://github.com/anton-fuji/dibo/releases/latest"><img src="https://img.shields.io/github/v/release/anton-fuji/dibo?style=flat-square" alt="GitHub release (latest by date)"></a>
+  <a href="https://github.com/anton-fuji/dibo/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/anton-fuji/dibo/ci.yml?logo=github&style=flat-square" alt="GitHub Workflow Status"></a>
+  <a href="https://goreportcard.com/report/github.com/anton-fuji/dibo"><img src="https://goreportcard.com/badge/github.com/anton-fuji/dibo?style=flat-square" alt="Go Report Card"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/anton-fuji/dibo?style=flat-square" alt="LICENSE"></a>
 </p>
 
 
@@ -23,8 +27,16 @@ With `dibo`, you can quickly create a `.dockerignore` tailored to your project b
 💡 [`fzf`](https://github.com/junegunn/fzf) integration — Interactive template selection (recommended)
 
 # Installation
+### Using Go 
+```sh
+go install github.com/anton-fuji/dibo@latest
+```
 
-Preparing...
+### Using Homebrew
+```sh
+brew tap anton-fuji/tap
+brew install dibo
+```
 
 
 # usage
