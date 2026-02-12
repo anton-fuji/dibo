@@ -38,6 +38,24 @@ brew tap anton-fuji/tap
 brew install dibo
 ```
 
+### Using Nix (Flakes)
+You can run `dibo` directly or install it using Nix Flakes.
+
+#### Run without installing
+```sh
+nix run github:anton-fuji/dibo -- list
+```
+
+#### Install to your profile
+```
+nix profile install github:anton-fuji/dibo
+```
+
+#### Use in a temporary shell
+```
+nix shell github:anton-fuji/dibo
+```
+
 
 # usage
 ## Generate .dockerignore
