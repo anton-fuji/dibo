@@ -38,3 +38,8 @@ go.work.sum
 # Unwanted file
 .dockerignore
 dist
+
+# Nix
+result
+result-*
+
