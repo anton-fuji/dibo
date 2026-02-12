@@ -17,13 +17,17 @@
           version = "0.1.0";
           src = ./.;
           
-          vendorHash = null; 
+          vendorHash = "sha256-AhGRCTU795Rwv2K435aSl8GCNwZX3M5mohYW5NipPkY="; 
 
           proxyVendor = true;
           
-          env = {
-            GOTOOLCHAIN = "auto";
-          };
+          preBuild = ''
+            export GOTOOLCHAIN=auto
+          '';
+
+          preConfigure = ''
+            export GOTOOLCHAIN=auto
+          '';
 
           ldflags = [ "-s" "-w" ];
 
@@ -41,9 +45,9 @@
             go
             gopls
           ];
-          env = {
-            GOTOOLCHAIN = "auto";
-          };
+          shellHook = ''
+            export GOTOOLCHAIN=auto
+          '';
         };
       }
      );
