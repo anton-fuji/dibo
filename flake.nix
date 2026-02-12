@@ -1,23 +1,27 @@
 {
   description = "A Go-based CLI to generate .dockerignore files, inspired by gibo.";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+  };
 
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-      in {
-        packages.dibo = pkgs.buildGoModule {
+      in
+      {
+        packages.default = pkgs.buildGoModule {
           pname = "dibo";
           version = "0.1.0";
-
           src = ./.;
+          
+          vendorHash = null; 
 
-          vendorHash = null;
-
-          go = pkgs.go_1_26;
+          proxyVendor = true;
+          
+          GOTOOLCHAIN = "auto";
 
           ldflags = [ "-s" "-w" ];
 
@@ -25,16 +29,20 @@
             description = "A Go-based CLI to generate .dockerignore files, inspired by gibo.";
             homepage = "https://github.com/anton-fuji/dibo";
             license = licenses.mit;
-            platforms = platforms.linux ++ platforms.darwin;
+            maintainers = [ "anton-fuji" ];
+            platforms = platforms.all;
           };
         };
 
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-            go_1_25
+            go
             gopls
-            golangci-lint
           ];
+          shellHook = ''
+            export GOTOOLCHAIN=auto
+          '';
         };
-      });
+      }
+     );
 }
