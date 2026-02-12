@@ -21,7 +21,9 @@
 
           proxyVendor = true;
           
-          GOTOOLCHAIN = "auto";
+          env = {
+            GOTOOLCHAIN = "auto";
+          };
 
           ldflags = [ "-s" "-w" ];
 
@@ -39,9 +41,9 @@
             go
             gopls
           ];
-          shellHook = ''
-            export GOTOOLCHAIN=auto
-          '';
+          env = {
+            GOTOOLCHAIN = "auto";
+          };
         };
       }
      );
