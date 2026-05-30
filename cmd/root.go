@@ -28,14 +28,15 @@ func Execute() {
 	}
 }
 
+// templateNames provides shell completion for template-name arguments,
+// omitting names already present on the command line.
 func templateNames(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	names, err := templates.List()
 	if err != nil {
 		return nil, cobra.ShellCompDirectiveError
 	}
-
 	used := make(map[string]struct{}, len(args))
-	for _, a := range names {
+	for _, a := range args {
 		used[strings.ToLower(a)] = struct{}{}
 	}
 	out := make([]string, 0, len(names))
@@ -45,7 +46,6 @@ func templateNames(cmd *cobra.Command, args []string, toComplete string) ([]stri
 		}
 		out = append(out, n)
 	}
-
 	return out, cobra.ShellCompDirectiveNoFileComp
 }
 
