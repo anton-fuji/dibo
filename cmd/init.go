@@ -33,17 +33,12 @@ var initCmd = &cobra.Command{
 			return err
 		}
 		for _, m := range missing {
-			fmt.Fprintf(errOut, "Warning: template %q not found, skipping...\n", m)
+			_, _ = fmt.Fprintf(errOut, "Warning: template %q not found, skipping...\n", m)
 		}
 
 		if initAppend {
-			f, err := os.OpenFile(initOutput, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
-			if err != nil {
-				return fmt.Errorf("open %s: %w", initOutput, err)
-			}
-			defer f.Close()
-			if _, err := f.WriteString(body); err != nil {
-				return fmt.Errorf("append to %s: %w", initOutput, err)
+			if err := appendToFile(initOutput, body); err != nil {
+				return err
 			}
 		} else {
 			if !initForce {
@@ -59,9 +54,26 @@ var initCmd = &cobra.Command{
 			}
 		}
 
-		fmt.Fprintf(cmd.OutOrStdout(), "%s written successfully\n", initOutput)
+		_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%s written successfully\n", initOutput)
 		return nil
 	},
+}
+
+// appendToFile appends body to path, surfacing both write and close errors.
+func appendToFile(path, body string) error {
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
+	if err != nil {
+		return fmt.Errorf("open %s: %w", path, err)
+	}
+	_, writeErr := f.WriteString(body)
+	closeErr := f.Close()
+	if writeErr != nil {
+		return fmt.Errorf("append to %s: %w", path, writeErr)
+	}
+	if closeErr != nil {
+		return fmt.Errorf("close %s: %w", path, closeErr)
+	}
+	return nil
 }
 
 func init() {

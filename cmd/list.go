@@ -19,14 +19,14 @@ var listCmd = &cobra.Command{
 			return err
 		}
 		if len(names) == 0 {
-			fmt.Fprintln(out, "No templates available.")
+			_, _ = fmt.Fprintln(out, "No templates available.")
 			return nil
 		}
 
-		fmt.Fprintln(out, "Available templates:")
-		fmt.Fprintln(out)
+		_, _ = fmt.Fprintln(out, "Available templates:")
+		_, _ = fmt.Fprintln(out)
 		for _, name := range names {
-			fmt.Fprintln(out, name)
+			_, _ = fmt.Fprintln(out, name)
 		}
 		return nil
 	},

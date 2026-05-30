@@ -20,11 +20,11 @@ var dumpCmd = &cobra.Command{
 		for _, arg := range args {
 			content, canonical, err := templates.Read(arg)
 			if err != nil {
-				fmt.Fprintf(errOut, "Error: template %q not found\n", arg)
+				_, _ = fmt.Fprintf(errOut, "Error: template %q not found\n", arg)
 				continue
 			}
-			fmt.Fprintf(out, "### %s ###\n", canonical)
-			fmt.Fprintln(out, string(content))
+			_, _ = fmt.Fprintf(out, "### %s ###\n", canonical)
+			_, _ = fmt.Fprintln(out, string(content))
 			found++
 		}
 

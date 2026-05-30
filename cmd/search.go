@@ -30,11 +30,11 @@ var searchCmd = &cobra.Command{
 		}
 
 		if len(matched) == 0 {
-			fmt.Fprintf(out, "No templates matching %q.\n", args[0])
+			_, _ = fmt.Fprintf(out, "No templates matching %q.\n", args[0])
 			return nil
 		}
 		for _, n := range matched {
-			fmt.Fprintln(out, n)
+			_, _ = fmt.Fprintln(out, n)
 		}
 		return nil
 	},
