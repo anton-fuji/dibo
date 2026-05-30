@@ -7,8 +7,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const ext = ".dockerignore"
-
 var (
 	version = "dev"
 )

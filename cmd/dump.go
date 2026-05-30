@@ -12,22 +12,24 @@ var dumpCmd = &cobra.Command{
 	Short: "Dump templates to stdout",
 	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		foundCnt := 0
+		out := cmd.OutOrStdout()
+		errOut := cmd.ErrOrStderr()
+
+		found := 0
 		for _, arg := range args {
-			filename := fmt.Sprintf("%s.dockerignore", arg)
-			content, err := templates.FS.ReadFile(filename)
+			content, canonical, err := templates.Read(arg)
 			if err != nil {
-				fmt.Printf("Error: Template '%s' not found\n", arg)
+				fmt.Fprintf(errOut, "Error: template %q not found\n", arg)
 				continue
 			}
-			fmt.Printf("### %s ###\n", arg)
-			fmt.Println(string(content))
-			foundCnt++
-		}
-		if foundCnt == 0 {
-			return fmt.Errorf("no valid templates found")
+			fmt.Fprintf(out, "### %s ###\n", canonical)
+			fmt.Fprintln(out, string(content))
+			found++
 		}
 
+		if found == 0 {
+			return fmt.Errorf("no valid templates found")
+		}
 		return nil
 	},
 }
