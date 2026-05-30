@@ -19,7 +19,7 @@ builds:
     binary: dibo
     ldflags:
       - -s -w
-      - -X main.version={{.Version}}
+      - -X github.com/anton-fuji/dibo/cmd.version={{.Version}}
 
   # Windows build
   - id: dibo-windows
@@ -34,7 +34,7 @@ builds:
     binary: dibo
     ldflags:
       - -s -w
-      - -X main.version={{.Version}}
+      - -X github.com/anton-fuji/dibo/cmd.version={{.Version}}
 
 archives:
   - id: tarballs
