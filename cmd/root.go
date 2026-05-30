@@ -7,9 +7,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const ext = ".dockerignore"
+
 var (
 	version = "dev"
 )
+
 var rootCmd = &cobra.Command{
 	Use:     "dibo",
 	Short:   "dibo is a CLI tool to generate .dockerignore files",

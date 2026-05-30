@@ -35,7 +35,7 @@ var initCmd = &cobra.Command{
 			return fmt.Errorf("no valid templates found")
 		}
 
-		err := os.WriteFile(".dockerignore", []byte(finalContent.String()), 0644)
+		err := os.WriteFile(ext, []byte(finalContent.String()), 0644)
 		if err != nil {
 			return fmt.Errorf("failed to write .dockerignore: %w", err)
 		}

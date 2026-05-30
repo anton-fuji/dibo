@@ -21,8 +21,8 @@ var listCmd = &cobra.Command{
 
 		var tmplName []string
 		for _, entry := range entries {
-			if strings.HasSuffix(entry.Name(), ".dockerignore") {
-				name := strings.TrimSuffix(entry.Name(), ".dockerignore")
+			if strings.HasSuffix(entry.Name(), ext) {
+				name := strings.TrimSuffix(entry.Name(), ext)
 				tmplName = append(tmplName, name)
 			}
 		}
