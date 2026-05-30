@@ -8,9 +8,10 @@ import (
 )
 
 var dumpCmd = &cobra.Command{
-	Use:   "dump [templates...]",
-	Short: "Dump templates to stdout",
-	Args:  cobra.MinimumNArgs(1),
+	Use:               "dump [templates...]",
+	Short:             "Dump templates to stdout",
+	Args:              cobra.MinimumNArgs(1),
+	ValidArgsFunction: templateNames,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		out := cmd.OutOrStdout()
 		errOut := cmd.ErrOrStderr()

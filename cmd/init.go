@@ -17,9 +17,10 @@ var (
 )
 
 var initCmd = &cobra.Command{
-	Use:   "init [templates...]",
-	Short: "Create a .dockerignore file",
-	Args:  cobra.MinimumNArgs(1),
+	Use:               "init [templates...]",
+	Short:             "Create a .dockerignore file",
+	Args:              cobra.MinimumNArgs(1),
+	ValidArgsFunction: templateNames,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		errOut := cmd.ErrOrStderr()
 
