@@ -139,5 +139,21 @@ dibo list | fzf
 dibo dump $(dibo list | fzf) >> .dockerignore
 ```
 
+## List Templates
+
+| Template | Description |
+| --- | --- |
+| `Common` | Shared defaults (VCS dirs, OS junk, editor files, logs, etc.) |
+| `Secrets` | Credentials, keys, certificates, and `.env` files |
+| `Go` | Go projects |
+| `Node` | Node.js / JavaScript |
+| `Python` | Python |
+| `Ruby` | Ruby / Rails |
+| `Rust` | Rust |
+| `Java` | Java / Kotlin |
+| `PHP` | PHP |
+| `dotNet` | .NET |
+
+
 # LICENSE
 [MIT](https://github.com/anton-fuji/dibo/blob/main/LICENSE)
