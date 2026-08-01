@@ -43,7 +43,7 @@ go install github.com/anton-fuji/dibo@latest
 ### Using Homebrew
 ```sh
 brew tap anton-fuji/tap
-brew install dibo
+brew install --cask dibo
 ```
  
 ### Using Nix (Flakes)
@@ -67,6 +67,22 @@ nix shell github:anton-fuji/dibo
  
 # usage
 Template names are **case-insensitive** — `go`, `Go`, and `GO` all resolve to the same template.
+
+## Development tasks
+
+This repository uses [just](https://just.systems/) as its task runner. Enter the Nix development shell, then run `just` to list available tasks.
+
+```sh
+nix develop
+just check    # format, lint, test, and build
+just run detect
+```
+
+## Release
+
+Release Please runs after every merge to `main`. Conventional Commit prefixes determine the next version: `feat:` creates a minor release, `fix:` a patch release, and `chore:` does not release. It creates a release PR; merging that PR creates the version tag and triggers GoReleaser to publish the GitHub Release and Homebrew Cask.
+
+The repository Actions secret `HOMEBREW_TAP_GITHUB_TOKEN` must have write access to both this repository and `anton-fuji/homebrew-tap`.
  
 ## Generate .dockerignore
 Generate `.dockerignore` for your project. Multiple templates are merged and duplicate patterns are removed automatically.
@@ -94,6 +110,19 @@ dibo init Go --force
 dibo init Node --append
 dibo init Go -o build/.dockerignore
 ```
+
+### Interactive selection
+
+Choose one or more templates without remembering their names. Enter the displayed numbers or template names, separated by commas.
+
+```sh
+dibo init --interactive
+# Available templates:
+#   1. Common
+#   2. Go
+#   ...
+# Select templates by number or name (comma-separated): 1, Go, Secrets
+```
  
 ## List Templates
 Show a list of available templates.
@@ -105,6 +134,34 @@ dibo list
 Filter templates by keyword (case-insensitive substring match).
 ```sh
 dibo search ru     # -> Ruby, Rust
+```
+
+## Detect a project
+
+Detect supported project files in a directory and print the recommended template set. Add `--write` to generate the file in that directory.
+
+```sh
+dibo detect
+# Detected: Go
+# Recommended templates: Common, Go, Secrets
+# Create it with: dibo init Common Go Secrets
+
+dibo detect ./api
+# Create it with: dibo init Common Go Secrets --output api/.dockerignore
+
+dibo detect ./api --write
+```
+
+`detect` recognizes Go, Node.js, Python, Ruby, Rust, Java/Kotlin, PHP, and .NET projects. It recommends `Common` and `Secrets` in addition to each detected language template.
+
+## Check a .dockerignore
+
+Check that the current `.dockerignore` excludes common build artifacts for detected project types and a small baseline of secret file patterns. The command exits non-zero when it finds omissions, which makes it suitable for CI.
+
+```sh
+dibo check
+dibo check ./api
+dibo check --file docker/.dockerignore
 ```
  
 ## Dump a template

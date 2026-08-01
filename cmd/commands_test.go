@@ -69,7 +69,9 @@ func TestSearchCmd(t *testing.T) {
 	}
 }
 
-func resetInitFlags(out string) { initForce, initAppend, initOutput = false, false, out }
+func resetInitFlags(out string) {
+	initForce, initAppend, initInteractive, initOutput = false, false, false, out
+}
 
 func TestInitCmd(t *testing.T) {
 	dir := t.TempDir()
@@ -129,6 +131,28 @@ func TestInitCmd(t *testing.T) {
 	}
 }
 
+func TestInitCmdInteractive(t *testing.T) {
+	dir := t.TempDir()
+	target := filepath.Join(dir, ".dockerignore")
+	resetInitFlags(target)
+	initInteractive = true
+	c, out, _ := newTestCmd()
+	c.SetIn(strings.NewReader("1, Go, 1\n"))
+	if err := initCmd.RunE(c, nil); err != nil {
+		t.Fatalf("interactive init failed: %v", err)
+	}
+	content, err := os.ReadFile(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Count(string(content), "### Common ###") != 1 || !strings.Contains(string(content), "### Go ###") {
+		t.Errorf("unexpected generated file:\n%s", content)
+	}
+	if !strings.Contains(out.String(), "Select templates by number or name") {
+		t.Errorf("interactive prompt missing:\n%s", out.String())
+	}
+}
+
 func TestTemplateCompletion(t *testing.T) {
 	got, dir := templateNames(nil, nil, "")
 	if dir != cobra.ShellCompDirectiveNoFileComp {
@@ -151,5 +175,57 @@ func TestTemplateCompletion(t *testing.T) {
 		if g == "Go" {
 			t.Errorf("Go should be excluded when already provided: %v", got2)
 		}
+	}
+}
+
+func TestDetectCmd(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	detectWrite, detectForce, detectOutput = false, false, defaultOutput
+	c, out, _ := newTestCmd()
+	if err := detectCmd.RunE(c, []string{dir}); err != nil {
+		t.Fatalf("detect failed: %v", err)
+	}
+	if !strings.Contains(out.String(), "Detected: Go") || !strings.Contains(out.String(), "Common, Go, Secrets") || !strings.Contains(out.String(), "dibo init Common Go Secrets --output "+filepath.Join(dir, defaultOutput)) {
+		t.Errorf("unexpected detect output:\n%s", out.String())
+	}
+
+	detectWrite = true
+	c, _, _ = newTestCmd()
+	if err := detectCmd.RunE(c, []string{dir}); err != nil {
+		t.Fatalf("detect --write failed: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, defaultOutput)); err != nil {
+		t.Fatalf("expected generated file: %v", err)
+	}
+}
+
+func TestCheckCmd(t *testing.T) {
+	dir := t.TempDir()
+	for _, name := range []string{"go.mod", ".dockerignore"} {
+		if err := os.WriteFile(filepath.Join(dir, name), []byte("bin/\n*.test\n.env\n*.pem\n*.key\n"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	checkFile = defaultOutput
+	c, out, _ := newTestCmd()
+	if err := checkCmd.RunE(c, []string{dir}); err != nil {
+		t.Fatalf("check failed: %v", err)
+	}
+	if !strings.Contains(out.String(), "looks good") {
+		t.Errorf("unexpected check output:\n%s", out.String())
+	}
+
+	if err := os.WriteFile(filepath.Join(dir, defaultOutput), []byte("bin/\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	c, out, _ = newTestCmd()
+	if err := checkCmd.RunE(c, []string{dir}); err == nil {
+		t.Fatal("expected check to fail")
+	}
+	if !strings.Contains(out.String(), "missing secret exclusion") {
+		t.Errorf("expected useful issue output:\n%s", out.String())
 	}
 }

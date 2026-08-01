@@ -38,9 +38,10 @@ builds:
 
 archives:
   - id: tarballs
-    builds:
+    ids:
       - dibo-nix
-    format: tar.gz
+    formats:
+      - tar.gz
     name_template: >-
       {{ .ProjectName }}_
       {{- .Version }}_
@@ -50,9 +51,10 @@ archives:
       {{- else }}{{ .Arch }}{{ end }}
 
   - id: windows
-    builds:
+    ids:
       - dibo-windows
-    format: zip
+    formats:
+      - zip
     name_template: >-
       {{ .ProjectName }}_
       {{- .Version }}_
@@ -74,16 +76,15 @@ changelog:
       - '^docs:'
       - '^test:'
 
-brews:
+homebrew_casks:
   - name: dibo
+    ids:
+      - tarballs
     repository:
       owner: anton-fuji
       name: homebrew-tap
-    directory: Formula
+    directory: Casks
     homepage: https://github.com/anton-fuji/dibo
     description: "A CLI tool for generating .dockerignore files from templates"
-    license: MIT
-    install: |
-      bin.install "dibo"
-    test: |
-      system "#{bin}/dibo", "--version"
+    binaries:
+      - dibo
