@@ -76,6 +76,10 @@ changelog:
       - '^docs:'
       - '^test:'
 
+# Allow a failed release to be rerun after some assets were uploaded.
+release:
+  replace_existing_artifacts: true
+
 homebrew_casks:
   - name: dibo
     ids:
