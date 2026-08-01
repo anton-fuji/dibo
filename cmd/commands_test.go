@@ -69,7 +69,9 @@ func TestSearchCmd(t *testing.T) {
 	}
 }
 
-func resetInitFlags(out string) { initForce, initAppend, initOutput = false, false, out }
+func resetInitFlags(out string) {
+	initForce, initAppend, initInteractive, initOutput = false, false, false, out
+}
 
 func TestInitCmd(t *testing.T) {
 	dir := t.TempDir()
@@ -126,6 +128,28 @@ func TestInitCmd(t *testing.T) {
 	c, _, _ = newTestCmd()
 	if err := initCmd.RunE(c, []string{"go"}); err == nil {
 		t.Error("expected error when both --force and --append set")
+	}
+}
+
+func TestInitCmdInteractive(t *testing.T) {
+	dir := t.TempDir()
+	target := filepath.Join(dir, ".dockerignore")
+	resetInitFlags(target)
+	initInteractive = true
+	c, out, _ := newTestCmd()
+	c.SetIn(strings.NewReader("1, Go, 1\n"))
+	if err := initCmd.RunE(c, nil); err != nil {
+		t.Fatalf("interactive init failed: %v", err)
+	}
+	content, err := os.ReadFile(target)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Count(string(content), "### Common ###") != 1 || !strings.Contains(string(content), "### Go ###") {
+		t.Errorf("unexpected generated file:\n%s", content)
+	}
+	if !strings.Contains(out.String(), "Select templates by number or name") {
+		t.Errorf("interactive prompt missing:\n%s", out.String())
 	}
 }
 

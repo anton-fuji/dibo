@@ -77,14 +77,19 @@ var checkCmd = &cobra.Command{
 	},
 }
 
-func readPatterns(path string) (map[string]bool, error) {
+func readPatterns(path string) (patterns map[string]bool, err error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("open %s: %w", path, err)
 	}
-	defer f.Close()
+	defer func() {
+		if closeErr := f.Close(); err == nil && closeErr != nil {
+			patterns = nil
+			err = fmt.Errorf("close %s: %w", path, closeErr)
+		}
+	}()
 
-	patterns := make(map[string]bool)
+	patterns = make(map[string]bool)
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())

@@ -40,7 +40,7 @@ var detectCmd = &cobra.Command{
 		_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Recommended templates: %s\n", strings.Join(recommended, ", "))
 
 		if !detectWrite {
-			fmt.Fprintln(cmd.OutOrStdout())
+			_, _ = fmt.Fprintln(cmd.OutOrStdout())
 			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Create it with: %s\n", initCommand(dir, recommended))
 			return nil
 		}
