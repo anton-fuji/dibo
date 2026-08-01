@@ -31,3 +31,24 @@ jobs:
           # This token needs write access to anton-fuji/homebrew-tap as well as
           # this repository. Add it as an Actions secret before the first release.
           GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+
+      - name: Check out Homebrew tap
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: anton-fuji/homebrew-tap
+          token: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+          path: homebrew-tap
+          persist-credentials: false
+
+      - name: Generate Homebrew Formula
+        run: ./scripts/update-homebrew-formula.sh "${GITHUB_REF_NAME}" "$GITHUB_WORKSPACE/homebrew-tap"
+
+      - name: Publish Homebrew Formula
+        working-directory: homebrew-tap
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f Casks/dibo.rb
+          git add -A
+          git diff --cached --quiet || git commit -m "Brew formula update for dibo version ${GITHUB_REF_NAME}"
+          git push "https://x-access-token:${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}@github.com/anton-fuji/homebrew-tap.git" HEAD:main

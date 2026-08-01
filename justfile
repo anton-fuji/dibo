@@ -11,6 +11,10 @@ test:
 lint:
   golangci-lint run
 
+# Vendor Go dependencies for offline Homebrew Formula builds.
+vendor:
+  go mod vendor
+
 # Format all Go source files.
 fmt:
   go fmt ./...
