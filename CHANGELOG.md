@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.1](https://github.com/anton-fuji/dibo/compare/v0.3.0...v0.3.1) (2026-08-01)
+
+
+### Bug Fixes
+
+* **release:** replace existing assets on retry ([97d12b4](https://github.com/anton-fuji/dibo/commit/97d12b40078982df7887f79094745fb45642a2ee))
+* **release:** replace existing assets on retry ([b7bbd12](https://github.com/anton-fuji/dibo/commit/b7bbd12ec7843f580fb3add8563807a65b8a7bbd))
+
 ## [0.3.0](https://github.com/anton-fuji/dibo/compare/v0.2.0...v0.3.0) (2026-08-01)
 
 
