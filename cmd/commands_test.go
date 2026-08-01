@@ -153,3 +153,55 @@ func TestTemplateCompletion(t *testing.T) {
 		}
 	}
 }
+
+func TestDetectCmd(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	detectWrite, detectForce, detectOutput = false, false, defaultOutput
+	c, out, _ := newTestCmd()
+	if err := detectCmd.RunE(c, []string{dir}); err != nil {
+		t.Fatalf("detect failed: %v", err)
+	}
+	if !strings.Contains(out.String(), "Detected: Go") || !strings.Contains(out.String(), "Common, Go, Secrets") || !strings.Contains(out.String(), "dibo init Common Go Secrets --output "+filepath.Join(dir, defaultOutput)) {
+		t.Errorf("unexpected detect output:\n%s", out.String())
+	}
+
+	detectWrite = true
+	c, _, _ = newTestCmd()
+	if err := detectCmd.RunE(c, []string{dir}); err != nil {
+		t.Fatalf("detect --write failed: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, defaultOutput)); err != nil {
+		t.Fatalf("expected generated file: %v", err)
+	}
+}
+
+func TestCheckCmd(t *testing.T) {
+	dir := t.TempDir()
+	for _, name := range []string{"go.mod", ".dockerignore"} {
+		if err := os.WriteFile(filepath.Join(dir, name), []byte("bin/\n*.test\n.env\n*.pem\n*.key\n"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	checkFile = defaultOutput
+	c, out, _ := newTestCmd()
+	if err := checkCmd.RunE(c, []string{dir}); err != nil {
+		t.Fatalf("check failed: %v", err)
+	}
+	if !strings.Contains(out.String(), "looks good") {
+		t.Errorf("unexpected check output:\n%s", out.String())
+	}
+
+	if err := os.WriteFile(filepath.Join(dir, defaultOutput), []byte("bin/\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	c, out, _ = newTestCmd()
+	if err := checkCmd.RunE(c, []string{dir}); err == nil {
+		t.Fatal("expected check to fail")
+	}
+	if !strings.Contains(out.String(), "missing secret exclusion") {
+		t.Errorf("expected useful issue output:\n%s", out.String())
+	}
+}
