@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.4.0](https://github.com/anton-fuji/dibo/compare/v0.3.1...v0.4.0) (2026-08-01)
+
+
+### Features
+
+* **homebrew:** publish source-built formula ([2ed891e](https://github.com/anton-fuji/dibo/commit/2ed891e8db4cb78d17dac402cecae981a6523edb))
+* **homebrew:** publish source-built formula ([62e3b54](https://github.com/anton-fuji/dibo/commit/62e3b549437257b2cd902007684cb21393781bf0))
+
 ## [0.3.1](https://github.com/anton-fuji/dibo/compare/v0.3.0...v0.3.1) (2026-08-01)
 
 
