@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.4.1](https://github.com/anton-fuji/dibo/compare/v0.4.0...v0.4.1) (2026-08-01)
+
+
+### Bug Fixes
+
+* display dibo version ([4d309c7](https://github.com/anton-fuji/dibo/commit/4d309c79b5fbf7e234804e3cbfc3203623420503))
+* display dibo version ([11bbb0d](https://github.com/anton-fuji/dibo/commit/11bbb0d86e01e070c00dbb81ab90b4538c44191f))
+
 ## [0.4.0](https://github.com/anton-fuji/dibo/compare/v0.3.1...v0.4.0) (2026-08-01)
 
 
