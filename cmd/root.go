@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"runtime/debug"
 	"strings"
 
 	"github.com/anton-fuji/dibo/internal/templates"
@@ -10,14 +11,32 @@ import (
 )
 
 var (
-	version = "dev"
+	version       = "dev"
+	readBuildInfo = debug.ReadBuildInfo
 )
+
+func resolvedVersion() string {
+	if version != "dev" {
+		return version
+	}
+
+	buildInfo, ok := readBuildInfo()
+	if !ok || buildInfo.Main.Path != "github.com/anton-fuji/dibo" {
+		return version
+	}
+
+	buildVersion := buildInfo.Main.Version
+	if buildVersion == "" || buildVersion == "(devel)" {
+		return version
+	}
+	return buildVersion
+}
 
 var rootCmd = &cobra.Command{
 	Use:     "dibo",
 	Short:   "dibo is a CLI tool to generate .dockerignore files",
 	Long:    `dibo (dockerignore boilerplates) helps you easily access .dockerignore boilerplates.`,
-	Version: version,
+	Version: resolvedVersion(),
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
