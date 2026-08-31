@@ -42,9 +42,11 @@ go install github.com/anton-fuji/dibo@latest
  
 ### Using Homebrew
 ```sh
-brew tap anton-fuji/tap
-brew install dibo
+brew install anton-fuji/tap/dibo
 ```
+
+Homebrew 6 and later require explicit trust for third-party taps. The fully
+qualified command above trusts only the `dibo` formula.
  
 ### Using Nix (Flakes)
 You can run `dibo` directly or install it using Nix Flakes.
