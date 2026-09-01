@@ -4,6 +4,10 @@
 </p>
 
 <p align="center">
+  <strong>English</strong> · <a href="./README.ja.md">日本語</a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/github/go-mod/go-version/anton-fuji/dibo?filename=go.mod&style=flat-square" alt="Go Version">
   <a href="https://github.com/anton-fuji/dibo/releases/latest"><img src="https://img.shields.io/github/v/release/anton-fuji/dibo?style=flat-square" alt="GitHub release (latest by date)"></a>
   <a href="https://github.com/anton-fuji/dibo/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/anton-fuji/dibo/ci.yml?logo=github&style=flat-square" alt="GitHub Workflow Status"></a>
@@ -42,9 +46,11 @@ go install github.com/anton-fuji/dibo@latest
  
 ### Using Homebrew
 ```sh
-brew tap anton-fuji/tap
-brew install dibo
+brew install anton-fuji/tap/dibo
 ```
+
+Homebrew 6 and later require explicit trust for third-party taps. The fully
+qualified command above trusts only the `dibo` formula.
  
 ### Using Nix (Flakes)
 You can run `dibo` directly or install it using Nix Flakes.
