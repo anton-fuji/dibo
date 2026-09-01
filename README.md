@@ -4,6 +4,10 @@
 </p>
 
 <p align="center">
+  <strong>English</strong> · <a href="./README.ja.md">日本語</a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/github/go-mod/go-version/anton-fuji/dibo?filename=go.mod&style=flat-square" alt="Go Version">
   <a href="https://github.com/anton-fuji/dibo/releases/latest"><img src="https://img.shields.io/github/v/release/anton-fuji/dibo?style=flat-square" alt="GitHub release (latest by date)"></a>
   <a href="https://github.com/anton-fuji/dibo/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/anton-fuji/dibo/ci.yml?logo=github&style=flat-square" alt="GitHub Workflow Status"></a>
