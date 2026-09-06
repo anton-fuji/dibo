@@ -18,3 +18,4 @@ jobs:
         with:
           token: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
           release-type: go
+          versioning-strategy: always-bump-patch

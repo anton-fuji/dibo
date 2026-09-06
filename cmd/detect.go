@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -12,9 +13,10 @@ import (
 )
 
 var (
-	detectWrite  bool
-	detectForce  bool
-	detectOutput string
+	detectWrite     bool
+	detectForce     bool
+	detectOutput    string
+	detectRecursive bool
 )
 
 var detectCmd = &cobra.Command{
@@ -26,17 +28,15 @@ var detectCmd = &cobra.Command{
 		if len(args) == 1 {
 			dir = args[0]
 		}
-		found, err := project.Detect(dir)
+		detections, err := detectProject(dir, detectRecursive)
 		if err != nil {
 			return err
 		}
-		if len(found) == 0 {
+		if len(detections) == 0 {
 			return fmt.Errorf("no supported project type detected in %s", dir)
 		}
 
-		recommended := append([]string{"Common"}, found...)
-		recommended = append(recommended, "Secrets")
-		_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Detected: %s\n", strings.Join(found, ", "))
+		recommended := printDetectionSummary(cmd.OutOrStdout(), detections)
 		_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Recommended templates: %s\n", strings.Join(recommended, ", "))
 
 		if !detectWrite {
@@ -72,9 +72,53 @@ func initCommand(dir string, templates []string) string {
 	return command
 }
 
+func detectProject(dir string, recursive bool) ([]project.Detection, error) {
+	if recursive {
+		return project.DetectWithEvidenceRecursive(dir)
+	}
+	return project.DetectWithEvidence(dir)
+}
+
+func recommendedTemplates(detections []project.Detection) []string {
+	recommended := []string{"Common"}
+	seen := map[string]bool{"Common": true}
+	for _, detection := range detections {
+		if !seen[detection.Template] {
+			recommended = append(recommended, detection.Template)
+			seen[detection.Template] = true
+		}
+	}
+	if !seen["Secrets"] {
+		recommended = append(recommended, "Secrets")
+	}
+	return recommended
+}
+
+func printDetectionSummary(out io.Writer, detections []project.Detection) []string {
+	found := make([]string, 0, len(detections))
+	seen := make(map[string]bool, len(detections))
+	for _, detection := range detections {
+		if !seen[detection.Template] {
+			found = append(found, detection.Template)
+			seen[detection.Template] = true
+		}
+	}
+	_, _ = fmt.Fprintf(out, "Detected: %s\n", strings.Join(found, ", "))
+	_, _ = fmt.Fprintln(out, "Detection evidence:")
+	for _, detection := range detections {
+		label := detection.Template
+		if detection.Directory != "" && detection.Directory != "." {
+			label += " (" + detection.Directory + ")"
+		}
+		_, _ = fmt.Fprintf(out, "  %s: %s\n", label, strings.Join(detection.Signals, ", "))
+	}
+	return recommendedTemplates(detections)
+}
+
 func init() {
 	detectCmd.Flags().BoolVarP(&detectWrite, "write", "w", false, "write the recommended .dockerignore")
 	detectCmd.Flags().BoolVarP(&detectForce, "force", "f", false, "overwrite the output file when used with --write")
 	detectCmd.Flags().StringVarP(&detectOutput, "output", "o", defaultOutput, "output file path when used with --write")
+	detectCmd.Flags().BoolVarP(&detectRecursive, "recursive", "r", false, "detect supported projects in nested directories")
 	rootCmd.AddCommand(detectCmd)
 }

@@ -70,7 +70,7 @@ func TestSearchCmd(t *testing.T) {
 }
 
 func resetInitFlags(out string) {
-	initForce, initAppend, initInteractive, initOutput = false, false, false, out
+	initForce, initAppend, initInteractive, initRecursive, initOutput = false, false, false, false, out
 }
 
 func TestInitCmd(t *testing.T) {
@@ -153,6 +153,106 @@ func TestInitCmdInteractive(t *testing.T) {
 	}
 }
 
+func TestInitCmdAutoDetect(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	resetInitFlags(defaultOutput)
+	c, out, _ := newTestCmd()
+	c.SetIn(strings.NewReader("y\n"))
+	if err := initCmd.RunE(c, nil); err != nil {
+		t.Fatalf("automatic init failed: %v", err)
+	}
+	content, err := os.ReadFile(filepath.Join(dir, defaultOutput))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(content), "### Go ###") {
+		t.Errorf("expected detected Go template:\n%s", content)
+	}
+	for _, want := range []string{"Detected: Go", "Go: go.mod", "Recommended templates: Common, Go, Secrets", "Create .dockerignore? [y/N]"} {
+		if !strings.Contains(out.String(), want) {
+			t.Errorf("automatic init output missing %q:\n%s", want, out.String())
+		}
+	}
+}
+
+func TestInitCmdAutoDetectCancel(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	if err := os.WriteFile(filepath.Join(dir, "package.json"), nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	resetInitFlags(defaultOutput)
+	c, out, _ := newTestCmd()
+	c.SetIn(strings.NewReader("n\n"))
+	if err := initCmd.RunE(c, nil); err != nil {
+		t.Fatalf("canceled automatic init failed: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, defaultOutput)); !os.IsNotExist(err) {
+		t.Fatalf("expected no generated file, stat error: %v", err)
+	}
+	if !strings.Contains(out.String(), "Canceled.") {
+		t.Errorf("expected cancellation message:\n%s", out.String())
+	}
+}
+
+func TestInitCmdAutoDetectRefusesExistingFile(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	if err := os.WriteFile(filepath.Join(dir, "go.mod"), nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	original := "keep this file\n"
+	if err := os.WriteFile(filepath.Join(dir, defaultOutput), []byte(original), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	resetInitFlags(defaultOutput)
+	c, _, _ := newTestCmd()
+	c.SetIn(strings.NewReader("y\n"))
+	if err := initCmd.RunE(c, nil); err == nil {
+		t.Fatal("expected automatic init to refuse existing file")
+	}
+	content, err := os.ReadFile(filepath.Join(dir, defaultOutput))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(content) != original {
+		t.Errorf("existing file was changed: %q", content)
+	}
+}
+
+func TestInitCmdAutoDetectRecursive(t *testing.T) {
+	dir := t.TempDir()
+	t.Chdir(dir)
+	path := filepath.Join(dir, "apps", "api", "requirements.txt")
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	resetInitFlags(defaultOutput)
+	initRecursive = true
+	c, out, _ := newTestCmd()
+	c.SetIn(strings.NewReader("y\n"))
+	if err := initCmd.RunE(c, nil); err != nil {
+		t.Fatalf("recursive automatic init failed: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, defaultOutput)); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(out.String(), "Python (apps/api): requirements.txt") {
+		t.Errorf("recursive evidence missing:\n%s", out.String())
+	}
+}
+
 func TestTemplateCompletion(t *testing.T) {
 	got, dir := templateNames(nil, nil, "")
 	if dir != cobra.ShellCompDirectiveNoFileComp {
@@ -188,7 +288,7 @@ func TestDetectCmd(t *testing.T) {
 	if err := detectCmd.RunE(c, []string{dir}); err != nil {
 		t.Fatalf("detect failed: %v", err)
 	}
-	if !strings.Contains(out.String(), "Detected: Go") || !strings.Contains(out.String(), "Common, Go, Secrets") || !strings.Contains(out.String(), "dibo init Common Go Secrets --output "+filepath.Join(dir, defaultOutput)) {
+	if !strings.Contains(out.String(), "Detected: Go") || !strings.Contains(out.String(), "Go: go.mod") || !strings.Contains(out.String(), "Common, Go, Secrets") || !strings.Contains(out.String(), "dibo init Common Go Secrets --output "+filepath.Join(dir, defaultOutput)) {
 		t.Errorf("unexpected detect output:\n%s", out.String())
 	}
 
@@ -200,6 +300,53 @@ func TestDetectCmd(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(dir, defaultOutput)); err != nil {
 		t.Fatalf("expected generated file: %v", err)
 	}
+
+	// --write refuses to overwrite an existing file without --force.
+	detectForce = false
+	c, _, _ = newTestCmd()
+	if err := detectCmd.RunE(c, []string{dir}); err == nil {
+		t.Error("expected detect --write to refuse existing file")
+	}
+
+	// --force allows the detected templates to replace the existing file.
+	detectForce = true
+	c, _, _ = newTestCmd()
+	if err := detectCmd.RunE(c, []string{dir}); err != nil {
+		t.Fatalf("detect --write --force failed: %v", err)
+	}
+}
+
+func TestDetectCmdRecursive(t *testing.T) {
+	dir := t.TempDir()
+	files := []string{
+		filepath.Join(dir, "apps", "api", "requirements.txt"),
+		filepath.Join(dir, "packages", "web", "package.json"),
+	}
+	for _, path := range files {
+		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(path, nil, 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	detectWrite, detectForce, detectOutput, detectRecursive = false, false, defaultOutput, true
+	c, out, _ := newTestCmd()
+	if err := detectCmd.RunE(c, []string{dir}); err != nil {
+		t.Fatalf("recursive detect failed: %v", err)
+	}
+	for _, want := range []string{
+		"Detected: Python, Node",
+		"Python (apps/api): requirements.txt",
+		"Node (packages/web): package.json",
+		"Recommended templates: Common, Python, Node, Secrets",
+	} {
+		if !strings.Contains(out.String(), want) {
+			t.Errorf("recursive detect output missing %q:\n%s", want, out.String())
+		}
+	}
+	detectRecursive = false
 }
 
 func TestCheckCmd(t *testing.T) {

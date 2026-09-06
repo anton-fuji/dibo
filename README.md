@@ -86,7 +86,7 @@ just run detect
 
 ## Release
 
-Release Please runs after every merge to `main`. Conventional Commit prefixes determine the next version: `feat:` creates a minor release, `fix:` a patch release, and `chore:` does not release. It creates a release PR; merging that PR creates the version tag and triggers GoReleaser to publish the GitHub Release and Homebrew Formula.
+Release Please runs after every merge to `main`. It creates a release PR when there are release-worthy changes, and every generated release uses a patch version bump. Documentation- and maintenance-only commits do not create a release. Merging the release PR creates the version tag and triggers GoReleaser to publish the GitHub Release and Homebrew Formula.
 
 The repository Actions secret `HOMEBREW_TAP_GITHUB_TOKEN` must have write access to both this repository and `anton-fuji/homebrew-tap`.
  
@@ -101,7 +101,18 @@ dibo init Go Node
  
 # Keep secrets out of your image
 dibo init Go Secrets
+
+# Auto-detect the current project and ask before generating
+dibo init
+
+# Auto-detect nested projects in a monorepo
+dibo init --recursive
 ```
+
+When no templates are provided, `init` detects the project type, shows the
+evidence and recommended templates, and asks for confirmation before writing.
+Recursive detection includes nested projects while skipping common dependency
+and build directories such as `node_modules`, `vendor`, `target`, and `dist`.
  
 By default `init` will **not** overwrite an existing `.dockerignore`. Use a flag to change that:
  
@@ -144,11 +155,13 @@ dibo search ru     # -> Ruby, Rust
 
 ## Detect a project
 
-Detect supported project files in a directory and print the recommended template set. Add `--write` to generate the file in that directory.
+Detect supported project files in a directory, show the evidence used for detection, and print the recommended template set. Add `--write` to generate the file in that directory. Add `--recursive` to include nested projects in a monorepo.
 
 ```sh
 dibo detect
 # Detected: Go
+# Detection evidence:
+#   Go: go.mod
 # Recommended templates: Common, Go, Secrets
 # Create it with: dibo init Common Go Secrets
 
@@ -156,6 +169,7 @@ dibo detect ./api
 # Create it with: dibo init Common Go Secrets --output api/.dockerignore
 
 dibo detect ./api --write
+dibo detect --recursive
 ```
 
 `detect` recognizes Go, Node.js, Python, Ruby, Rust, Java/Kotlin, PHP, and .NET projects. It recommends `Common` and `Secrets` in addition to each detected language template.
