@@ -199,7 +199,7 @@ just run detect
 
 ## リリース
 
-Release Please は `main` へのマージ後に実行されます。Conventional Commits のプレフィックスによって次のバージョンが決まり、`feat:` はマイナーリリース、`fix:` はパッチリリース、`chore:` はリリースを作成しません。Release PR をマージするとバージョンタグが作成され、GoReleaser が GitHub Release と Homebrew Formula を公開します。
+Release Please は `main` へのマージ後に実行されます。リリース対象の変更がある場合に Release PR を作成し、生成されるリリースはすべてパッチバージョンを上げます。ドキュメントやメンテナンスのみの変更ではリリースを作成しません。Release PR をマージするとバージョンタグが作成され、GoReleaser が GitHub Release と Homebrew Formula を公開します。
 
 GitHub Actions の secret `HOMEBREW_TAP_GITHUB_TOKEN` には、このリポジトリと `anton-fuji/homebrew-tap` の両方への書き込み権限が必要です。
 
