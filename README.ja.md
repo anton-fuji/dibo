@@ -81,7 +81,16 @@ dibo init Go Node
 
 # Secrets を除外
 dibo init Go Secrets
+
+# プロジェクトを自動検出して確認後に生成
+dibo init
+
+# モノレポ内のプロジェクトも自動検出
+dibo init --recursive
 ```
+
+テンプレートを指定しない場合、`init` はプロジェクト種別と検出根拠、推奨テンプレートを表示し、確認後にファイルを生成します。
+`--recursive` を付けると配下のプロジェクトも検出します。`node_modules`、`vendor`、`target`、`dist` などの依存関係・ビルド用ディレクトリは除外します。
 
 デフォルトでは、`init` は既存の `.dockerignore` を上書きしません。動作を変更するにはフラグを使用します。
 
@@ -112,7 +121,7 @@ dibo init --interactive
 
 ## プロジェクトを検出
 
-ディレクトリ内のファイルを調べ、検出に使った根拠と推奨するテンプレートの組み合わせを表示します。`--write` を付けると、そのディレクトリにファイルを生成します。
+ディレクトリ内のファイルを調べ、検出に使った根拠と推奨するテンプレートの組み合わせを表示します。`--write` を付けると、そのディレクトリにファイルを生成します。`--recursive` を付けると、モノレポ内の配下プロジェクトも検出します。
 
 ```sh
 dibo detect
@@ -126,6 +135,7 @@ dibo detect ./api
 # Create it with: dibo init Common Go Secrets --output api/.dockerignore
 
 dibo detect ./api --write
+dibo detect --recursive
 ```
 
 `detect` は Go、Node.js、Python、Ruby、Rust、Java/Kotlin、PHP、.NET のプロジェクトを検出します。検出した言語のテンプレートに加えて、`Common` と `Secrets` も推奨します。

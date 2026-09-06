@@ -101,7 +101,18 @@ dibo init Go Node
  
 # Keep secrets out of your image
 dibo init Go Secrets
+
+# Auto-detect the current project and ask before generating
+dibo init
+
+# Auto-detect nested projects in a monorepo
+dibo init --recursive
 ```
+
+When no templates are provided, `init` detects the project type, shows the
+evidence and recommended templates, and asks for confirmation before writing.
+Recursive detection includes nested projects while skipping common dependency
+and build directories such as `node_modules`, `vendor`, `target`, and `dist`.
  
 By default `init` will **not** overwrite an existing `.dockerignore`. Use a flag to change that:
  
@@ -144,7 +155,7 @@ dibo search ru     # -> Ruby, Rust
 
 ## Detect a project
 
-Detect supported project files in a directory, show the evidence used for detection, and print the recommended template set. Add `--write` to generate the file in that directory.
+Detect supported project files in a directory, show the evidence used for detection, and print the recommended template set. Add `--write` to generate the file in that directory. Add `--recursive` to include nested projects in a monorepo.
 
 ```sh
 dibo detect
@@ -158,6 +169,7 @@ dibo detect ./api
 # Create it with: dibo init Common Go Secrets --output api/.dockerignore
 
 dibo detect ./api --write
+dibo detect --recursive
 ```
 
 `detect` recognizes Go, Node.js, Python, Ruby, Rust, Java/Kotlin, PHP, and .NET projects. It recommends `Common` and `Secrets` in addition to each detected language template.
