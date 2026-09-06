@@ -67,7 +67,7 @@ project type and asks for confirmation before generating the file.`,
 				return err
 			}
 			if len(detections) == 0 {
-				return fmt.Errorf("no supported project type detected in .")
+				return fmt.Errorf("no supported project type detected in %s", ".")
 			}
 			args = printDetectionSummary(cmd.OutOrStdout(), detections)
 			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Recommended templates: %s\n", strings.Join(args, ", "))
