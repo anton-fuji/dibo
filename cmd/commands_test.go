@@ -188,7 +188,7 @@ func TestDetectCmd(t *testing.T) {
 	if err := detectCmd.RunE(c, []string{dir}); err != nil {
 		t.Fatalf("detect failed: %v", err)
 	}
-	if !strings.Contains(out.String(), "Detected: Go") || !strings.Contains(out.String(), "Common, Go, Secrets") || !strings.Contains(out.String(), "dibo init Common Go Secrets --output "+filepath.Join(dir, defaultOutput)) {
+	if !strings.Contains(out.String(), "Detected: Go") || !strings.Contains(out.String(), "Go: go.mod") || !strings.Contains(out.String(), "Common, Go, Secrets") || !strings.Contains(out.String(), "dibo init Common Go Secrets --output "+filepath.Join(dir, defaultOutput)) {
 		t.Errorf("unexpected detect output:\n%s", out.String())
 	}
 

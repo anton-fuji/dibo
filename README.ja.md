@@ -112,11 +112,13 @@ dibo init --interactive
 
 ## プロジェクトを検出
 
-ディレクトリ内のファイルを調べ、推奨するテンプレートの組み合わせを表示します。`--write` を付けると、そのディレクトリにファイルを生成します。
+ディレクトリ内のファイルを調べ、検出に使った根拠と推奨するテンプレートの組み合わせを表示します。`--write` を付けると、そのディレクトリにファイルを生成します。
 
 ```sh
 dibo detect
 # Detected: Go
+# Detection evidence:
+#   Go: go.mod
 # Recommended templates: Common, Go, Secrets
 # Create it with: dibo init Common Go Secrets
 

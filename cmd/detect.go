@@ -26,17 +26,25 @@ var detectCmd = &cobra.Command{
 		if len(args) == 1 {
 			dir = args[0]
 		}
-		found, err := project.Detect(dir)
+		detections, err := project.DetectWithEvidence(dir)
 		if err != nil {
 			return err
 		}
-		if len(found) == 0 {
+		if len(detections) == 0 {
 			return fmt.Errorf("no supported project type detected in %s", dir)
 		}
 
+		found := make([]string, 0, len(detections))
+		for _, detection := range detections {
+			found = append(found, detection.Template)
+		}
 		recommended := append([]string{"Common"}, found...)
 		recommended = append(recommended, "Secrets")
 		_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Detected: %s\n", strings.Join(found, ", "))
+		_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Detection evidence:")
+		for _, detection := range detections {
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "  %s: %s\n", detection.Template, strings.Join(detection.Signals, ", "))
+		}
 		_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Recommended templates: %s\n", strings.Join(recommended, ", "))
 
 		if !detectWrite {

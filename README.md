@@ -144,11 +144,13 @@ dibo search ru     # -> Ruby, Rust
 
 ## Detect a project
 
-Detect supported project files in a directory and print the recommended template set. Add `--write` to generate the file in that directory.
+Detect supported project files in a directory, show the evidence used for detection, and print the recommended template set. Add `--write` to generate the file in that directory.
 
 ```sh
 dibo detect
 # Detected: Go
+# Detection evidence:
+#   Go: go.mod
 # Recommended templates: Common, Go, Secrets
 # Create it with: dibo init Common Go Secrets
 
