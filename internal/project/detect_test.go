@@ -107,3 +107,36 @@ func TestDetectWithEvidenceNoMatch(t *testing.T) {
 		t.Errorf("DetectWithEvidence() = %v, want no detections", got)
 	}
 }
+
+func TestDetectWithEvidenceRecursive(t *testing.T) {
+	dir := t.TempDir()
+	files := map[string]string{
+		"go.mod":                            "",
+		"apps/api/requirements.txt":         "",
+		"packages/web/package.json":         "",
+		"node_modules/ignored/package.json": "",
+		"target/ignored/Cargo.toml":         "",
+	}
+	for name := range files {
+		path := filepath.Join(dir, name)
+		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(path, nil, 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	got, err := DetectWithEvidenceRecursive(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []Detection{
+		{Template: "Go", Signals: []string{"go.mod"}, Directory: "."},
+		{Template: "Python", Signals: []string{"requirements.txt"}, Directory: "apps/api"},
+		{Template: "Node", Signals: []string{"package.json"}, Directory: "packages/web"},
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("DetectWithEvidenceRecursive() = %v, want %v", got, want)
+	}
+}

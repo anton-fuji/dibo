@@ -19,6 +19,7 @@ var (
 	initAppend      bool
 	initOutput      string
 	initInteractive bool
+	initRecursive   bool
 )
 
 var initCmd = &cobra.Command{
@@ -27,8 +28,11 @@ var initCmd = &cobra.Command{
 	Long: `Create a .dockerignore file from one or more templates.
 
 Use --interactive to choose templates from a numbered list instead of passing
-their names as arguments.`,
+their names as arguments. When no templates are provided, dibo detects the
+project type and asks for confirmation before generating the file.`,
 	Example: `  dibo init Go Secrets
+  dibo init
+  dibo init --recursive
   dibo init --interactive
   dibo init -i --output docker/.dockerignore`,
 	Args: func(cmd *cobra.Command, args []string) error {
@@ -36,9 +40,15 @@ their names as arguments.`,
 			if len(args) > 0 {
 				return fmt.Errorf("templates cannot be used with --interactive")
 			}
+			if initRecursive {
+				return fmt.Errorf("--recursive cannot be used with --interactive")
+			}
 			return nil
 		}
-		return cobra.MinimumNArgs(1)(cmd, args)
+		if initRecursive && len(args) > 0 {
+			return fmt.Errorf("--recursive cannot be used with explicit templates")
+		}
+		return nil
 	},
 	ValidArgsFunction: templateNames,
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -46,6 +56,29 @@ their names as arguments.`,
 
 		if initForce && initAppend {
 			return fmt.Errorf("--force and --append cannot be used together")
+		}
+		if initRecursive && (initInteractive || len(args) > 0) {
+			return fmt.Errorf("--recursive requires automatic detection")
+		}
+		autoDetect := len(args) == 0 && !initInteractive
+		if autoDetect {
+			detections, err := detectProject(".", initRecursive)
+			if err != nil {
+				return err
+			}
+			if len(detections) == 0 {
+				return fmt.Errorf("no supported project type detected in .")
+			}
+			args = printDetectionSummary(cmd.OutOrStdout(), detections)
+			_, _ = fmt.Fprintf(cmd.OutOrStdout(), "Recommended templates: %s\n", strings.Join(args, ", "))
+			confirmed, err := confirmGeneration(cmd.OutOrStdout(), cmd.InOrStdin(), initOutput)
+			if err != nil {
+				return err
+			}
+			if !confirmed {
+				_, _ = fmt.Fprintln(cmd.OutOrStdout(), "Canceled.")
+				return nil
+			}
 		}
 		if initInteractive {
 			var err error
@@ -129,6 +162,16 @@ func selectTemplates(out io.Writer, in io.Reader) ([]string, error) {
 	return selected, nil
 }
 
+func confirmGeneration(out io.Writer, in io.Reader, output string) (bool, error) {
+	_, _ = fmt.Fprintf(out, "Create %s? [y/N] ", output)
+	line, err := bufio.NewReader(in).ReadString('\n')
+	if err != nil && err != io.EOF {
+		return false, fmt.Errorf("read confirmation: %w", err)
+	}
+	answer := strings.ToLower(strings.TrimSpace(line))
+	return answer == "y" || answer == "yes", nil
+}
+
 func writeDockerignore(path, body string, force bool) error {
 	if !force {
 		if _, err := os.Stat(path); err == nil {
@@ -166,5 +209,6 @@ func init() {
 	initCmd.Flags().BoolVarP(&initAppend, "append", "a", false, "append to the file instead of overwriting")
 	initCmd.Flags().StringVarP(&initOutput, "output", "o", defaultOutput, "output file path")
 	initCmd.Flags().BoolVarP(&initInteractive, "interactive", "i", false, "select templates interactively")
+	initCmd.Flags().BoolVarP(&initRecursive, "recursive", "r", false, "detect supported projects in nested directories")
 	rootCmd.AddCommand(initCmd)
 }
