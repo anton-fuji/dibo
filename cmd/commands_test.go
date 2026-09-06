@@ -200,6 +200,20 @@ func TestDetectCmd(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(dir, defaultOutput)); err != nil {
 		t.Fatalf("expected generated file: %v", err)
 	}
+
+	// --write refuses to overwrite an existing file without --force.
+	detectForce = false
+	c, _, _ = newTestCmd()
+	if err := detectCmd.RunE(c, []string{dir}); err == nil {
+		t.Error("expected detect --write to refuse existing file")
+	}
+
+	// --force allows the detected templates to replace the existing file.
+	detectForce = true
+	c, _, _ = newTestCmd()
+	if err := detectCmd.RunE(c, []string{dir}); err != nil {
+		t.Fatalf("detect --write --force failed: %v", err)
+	}
 }
 
 func TestCheckCmd(t *testing.T) {
