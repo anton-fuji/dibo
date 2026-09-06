@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.4.2](https://github.com/anton-fuji/dibo/compare/v0.4.1...v0.4.2) (2026-09-06)
+
+
+### Features
+
+* add safe automatic and recursive detection ([e5496cf](https://github.com/anton-fuji/dibo/commit/e5496cf3788631af385b72e78ea6b3eeb41bf52b))
+* expose project detection evidence ([1f4e2c3](https://github.com/anton-fuji/dibo/commit/1f4e2c3bf957509959128892a03a16d4b3f7fa27))
+* show detection evidence in detect ([fc42704](https://github.com/anton-fuji/dibo/commit/fc4270443c98c5dbda73fcdbee0d044988411167))
+
+
+### Bug Fixes
+
+* satisfy golangci lint for auto detection ([86ba616](https://github.com/anton-fuji/dibo/commit/86ba6163269047cfed92f5111098cd43db162886))
+
 ## [0.4.1](https://github.com/anton-fuji/dibo/compare/v0.4.0...v0.4.1) (2026-08-01)
 
 
