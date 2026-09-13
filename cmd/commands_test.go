@@ -376,3 +376,41 @@ func TestCheckCmd(t *testing.T) {
 		t.Errorf("expected useful issue output:\n%s", out.String())
 	}
 }
+
+func TestCheckCmdAdditionalTypes(t *testing.T) {
+	tests := []struct {
+		name     string
+		marker   string
+		patterns []string
+	}{
+		{name: "C", marker: "CMakeLists.txt", patterns: []string{"build/", "CMakeFiles/", "*.o"}},
+		{name: "Dart", marker: "pubspec.yaml", patterns: []string{".dart_tool/", "build/"}},
+		{name: "Elixir", marker: "mix.exs", patterns: []string{"_build/", "deps/"}},
+		{name: "Scala", marker: "build.sbt", patterns: []string{"target/"}},
+		{name: "Swift", marker: "Package.swift", patterns: []string{".build/"}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dir := t.TempDir()
+			for _, name := range []string{tt.marker, ".dockerignore"} {
+				if err := os.WriteFile(filepath.Join(dir, name), nil, 0o644); err != nil {
+					t.Fatal(err)
+				}
+			}
+			content := strings.Join(append(append([]string{}, secretPatterns...), tt.patterns...), "\n") + "\n"
+			if err := os.WriteFile(filepath.Join(dir, defaultOutput), []byte(content), 0o644); err != nil {
+				t.Fatal(err)
+			}
+
+			checkFile = defaultOutput
+			c, out, _ := newTestCmd()
+			if err := checkCmd.RunE(c, []string{dir}); err != nil {
+				t.Fatalf("check failed: %v", err)
+			}
+			if !strings.Contains(out.String(), "looks good") {
+				t.Errorf("unexpected check output:\n%s", out.String())
+			}
+		})
+	}
+}

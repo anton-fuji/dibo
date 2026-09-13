@@ -23,6 +23,9 @@ type Detection struct {
 }
 
 var types = []Type{
+	{Template: "C", Signals: []string{"CMakeLists.txt", "Makefile"}},
+	{Template: "Dart", Signals: []string{"pubspec.yaml"}},
+	{Template: "Elixir", Signals: []string{"mix.exs"}},
 	{Template: "Go", Signals: []string{"go.mod"}},
 	{Template: "Node", Signals: []string{"package.json"}},
 	{Template: "Python", Signals: []string{"pyproject.toml", "requirements.txt", "Pipfile", "setup.py"}},
@@ -30,6 +33,8 @@ var types = []Type{
 	{Template: "Rust", Signals: []string{"Cargo.toml"}},
 	{Template: "Java", Signals: []string{"pom.xml", "build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts"}},
 	{Template: "PHP", Signals: []string{"composer.json"}},
+	{Template: "Scala", Signals: []string{"build.sbt"}},
+	{Template: "Swift", Signals: []string{"Package.swift"}},
 }
 
 var ignoredDirectories = map[string]struct{}{

@@ -14,6 +14,9 @@ import (
 var checkFile string
 
 var requiredPatterns = map[string][]string{
+	"C":      {"build/", "CMakeFiles/", "*.o"},
+	"Dart":   {".dart_tool/", "build/"},
+	"Elixir": {"_build/", "deps/"},
 	"Go":     {"bin/", "*.test"},
 	"Node":   {"node_modules/", ".env"},
 	"Python": {"__pycache__/", ".venv/", ".env"},
@@ -21,6 +24,8 @@ var requiredPatterns = map[string][]string{
 	"Rust":   {"target/"},
 	"Java":   {"target/", "build/"},
 	"PHP":    {"vendor/", ".env"},
+	"Scala":  {"target/"},
+	"Swift":  {".build/"},
 	"dotNet": {"bin/", "obj/"},
 }
 
