@@ -135,10 +135,13 @@ Choose one or more templates without remembering their names. Enter the displaye
 ```sh
 dibo init --interactive
 # Available templates:
-#   1. Common
-#   2. Go
+#   1. C
+#   2. Common
+#   3. Dart
+#   4. Elixir
+#   5. Go
 #   ...
-# Select templates by number or name (comma-separated): 1, Go, Secrets
+# Select templates by number or name (comma-separated): Common, Go, Secrets
 ```
  
 ## List Templates
@@ -172,7 +175,7 @@ dibo detect ./api --write
 dibo detect --recursive
 ```
 
-`detect` recognizes Go, Node.js, Python, Ruby, Rust, Java/Kotlin, PHP, and .NET projects. It recommends `Common` and `Secrets` in addition to each detected language template.
+`detect` recognizes C/C++, Go, Node.js, Python, Ruby, Rust, Java/Kotlin, PHP, .NET, Elixir, Dart/Flutter, Swift, and Scala projects. It recommends `Common` and `Secrets` in addition to each detected language template.
 
 ## Check a .dockerignore
 
@@ -222,6 +225,9 @@ dibo dump $(dibo list | fzf) >> .dockerignore
 | --- | --- |
 | `Common` | Shared defaults (VCS dirs, OS junk, editor files, logs, etc.) |
 | `Secrets` | Credentials, keys, certificates, and `.env` files |
+| `C` | C / C++ projects |
+| `Dart` | Dart / Flutter projects |
+| `Elixir` | Elixir projects |
 | `Go` | Go projects |
 | `Node` | Node.js / JavaScript |
 | `Python` | Python |
@@ -229,6 +235,8 @@ dibo dump $(dibo list | fzf) >> .dockerignore
 | `Rust` | Rust |
 | `Java` | Java / Kotlin |
 | `PHP` | PHP |
+| `Scala` | Scala projects |
+| `Swift` | Swift projects |
 | `dotNet` | .NET |
 
 
