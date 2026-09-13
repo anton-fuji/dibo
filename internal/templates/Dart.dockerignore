@@ -1,0 +1,17 @@
+# ============================================================================
+# DART / FLUTTER TEMPLATE
+# ============================================================================
+
+# --- Build & Tooling ---
+.dart_tool/
+build/
+.pub/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# --- Testing & Coverage ---
+coverage/
+
+# --- IDE Artifacts ---
+*.iml

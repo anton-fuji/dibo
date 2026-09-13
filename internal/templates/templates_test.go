@@ -21,7 +21,10 @@ func TestList(t *testing.T) {
 		}
 	}
 	// expected entries present
-	want := map[string]bool{"Common": false, "Go": false, "Node": false, "Secrets": false}
+	want := map[string]bool{
+		"C": false, "Common": false, "Dart": false, "Elixir": false,
+		"Go": false, "Node": false, "Secrets": false, "Scala": false, "Swift": false,
+	}
 	for _, n := range names {
 		if _, ok := want[n]; ok {
 			want[n] = true
@@ -42,6 +45,7 @@ func TestRead(t *testing.T) {
 		wantErr bool
 	}{
 		{"exact", "Go", "Go", false},
+		{"c-cpp", "C", "C", false},
 		{"lowercase", "go", "Go", false},
 		{"uppercase", "NODE", "Node", false},
 		{"unknown", "nope", "", true},
@@ -63,6 +67,31 @@ func TestRead(t *testing.T) {
 			}
 			if canon != tc.wantCan {
 				t.Errorf("Read(%q) canonical = %q, want %q", tc.arg, canon, tc.wantCan)
+			}
+		})
+	}
+}
+
+func TestLanguageTemplatesContainBuildArtifacts(t *testing.T) {
+	tests := []struct {
+		name    string
+		pattern string
+	}{
+		{name: "C", pattern: "*.o"},
+		{name: "Dart", pattern: ".dart_tool/"},
+		{name: "Elixir", pattern: "_build/"},
+		{name: "Scala", pattern: "target/"},
+		{name: "Swift", pattern: ".build/"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			content, _, err := Read(tt.name)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !strings.Contains(string(content), tt.pattern) {
+				t.Errorf("template %q missing %q:\n%s", tt.name, tt.pattern, content)
 			}
 		})
 	}

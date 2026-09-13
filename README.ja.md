@@ -113,10 +113,13 @@ dibo init Go -o build/.dockerignore
 ```sh
 dibo init --interactive
 # Available templates:
-#   1. Common
-#   2. Go
+#   1. C
+#   2. Common
+#   3. Dart
+#   4. Elixir
+#   5. Go
 #   ...
-# Select templates by number or name (comma-separated): 1, Go, Secrets
+# Select templates by number or name (comma-separated): Common, Go, Secrets
 ```
 
 ## プロジェクトを検出
@@ -138,7 +141,7 @@ dibo detect ./api --write
 dibo detect --recursive
 ```
 
-`detect` は Go、Node.js、Python、Ruby、Rust、Java/Kotlin、PHP、.NET のプロジェクトを検出します。検出した言語のテンプレートに加えて、`Common` と `Secrets` も推奨します。
+`detect` は C/C++、Go、Node.js、Python、Ruby、Rust、Java/Kotlin、PHP、.NET、Elixir、Dart/Flutter、Swift、Scala のプロジェクトを検出します。検出した言語のテンプレートに加えて、`Common` と `Secrets` も推奨します。
 
 ## `.dockerignore` をチェック
 
@@ -188,6 +191,9 @@ dibo dump $(dibo list | fzf) >> .dockerignore
 | --- | --- |
 | `Common` | 共通の除外設定（VCS ディレクトリ、OS の不要ファイル、エディタのファイル、ログなど） |
 | `Secrets` | 認証情報、鍵、証明書、`.env` ファイル |
+| `C` | C / C++ プロジェクト |
+| `Dart` | Dart / Flutter プロジェクト |
+| `Elixir` | Elixir プロジェクト |
 | `Go` | Go プロジェクト |
 | `Node` | Node.js / JavaScript |
 | `Python` | Python |
@@ -195,6 +201,8 @@ dibo dump $(dibo list | fzf) >> .dockerignore
 | `Rust` | Rust |
 | `Java` | Java / Kotlin |
 | `PHP` | PHP |
+| `Scala` | Scala プロジェクト |
+| `Swift` | Swift プロジェクト |
 | `dotNet` | .NET |
 
 ## 開発タスク

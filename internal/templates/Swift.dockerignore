@@ -1,0 +1,18 @@
+# ============================================================================
+# SWIFT TEMPLATE
+# ============================================================================
+
+# --- Swift Package Manager ---
+.build/
+.swiftpm/
+
+# --- Xcode Build Artifacts ---
+DerivedData/
+xcuserdata/
+*.xcuserstate
+
+# --- Generated Binaries ---
+Carthage/Build/
+*.app
+*.dSYM/
+*.ipa

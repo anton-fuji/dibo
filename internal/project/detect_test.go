@@ -58,6 +58,9 @@ func TestDetectWithEvidenceForEachType(t *testing.T) {
 		filename string
 		template string
 	}{
+		{name: "c-cpp", filename: "CMakeLists.txt", template: "C"},
+		{name: "dart", filename: "pubspec.yaml", template: "Dart"},
+		{name: "elixir", filename: "mix.exs", template: "Elixir"},
 		{name: "go", filename: "go.mod", template: "Go"},
 		{name: "node", filename: "package.json", template: "Node"},
 		{name: "python", filename: "pyproject.toml", template: "Python"},
@@ -65,6 +68,8 @@ func TestDetectWithEvidenceForEachType(t *testing.T) {
 		{name: "rust", filename: "Cargo.toml", template: "Rust"},
 		{name: "java", filename: "pom.xml", template: "Java"},
 		{name: "php", filename: "composer.json", template: "PHP"},
+		{name: "scala", filename: "build.sbt", template: "Scala"},
+		{name: "swift", filename: "Package.swift", template: "Swift"},
 		{name: "dotnet", filename: "service.csproj", template: "dotNet"},
 	}
 
@@ -84,6 +89,24 @@ func TestDetectWithEvidenceForEachType(t *testing.T) {
 				t.Errorf("DetectWithEvidence() = %v, want %v", got, want)
 			}
 		})
+	}
+}
+
+func TestDetectWithEvidenceMultipleSignals(t *testing.T) {
+	dir := t.TempDir()
+	for _, name := range []string{"CMakeLists.txt", "Makefile"} {
+		if err := os.WriteFile(filepath.Join(dir, name), nil, 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	got, err := DetectWithEvidence(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []Detection{{Template: "C", Signals: []string{"CMakeLists.txt", "Makefile"}}}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("DetectWithEvidence() = %v, want %v", got, want)
 	}
 }
 

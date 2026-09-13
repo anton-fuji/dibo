@@ -1,0 +1,14 @@
+# ============================================================================
+# SCALA TEMPLATE
+# ============================================================================
+
+# --- Build Artifacts ---
+target/
+project/target/
+*.class
+
+# --- Build Tool Metadata ---
+.bsp/
+.bloop/
+.metals/
+.scala-build/
