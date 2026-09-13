@@ -1,0 +1,16 @@
+# ============================================================================
+# ELIXIR TEMPLATE
+# ============================================================================
+
+# --- Build & Dependencies ---
+_build/
+deps/
+.elixir_ls/
+
+# --- Compiled Artifacts ---
+*.beam
+*.ez
+erl_crash.dump
+
+# --- Generated Documentation ---
+doc/

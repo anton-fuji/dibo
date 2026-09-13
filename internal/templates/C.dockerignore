@@ -1,0 +1,25 @@
+# ============================================================================
+# C / C++ TEMPLATE
+# ============================================================================
+
+# --- Build Directories ---
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
+
+# --- Generated Build Metadata ---
+compile_commands.json
+*.d
+
+# --- Compiled Artifacts ---
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+*.out

@@ -137,7 +137,7 @@ func TestInitCmdInteractive(t *testing.T) {
 	resetInitFlags(target)
 	initInteractive = true
 	c, out, _ := newTestCmd()
-	c.SetIn(strings.NewReader("1, Go, 1\n"))
+	c.SetIn(strings.NewReader("Common, Go, Common\n"))
 	if err := initCmd.RunE(c, nil); err != nil {
 		t.Fatalf("interactive init failed: %v", err)
 	}
